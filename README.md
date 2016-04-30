@@ -11,6 +11,11 @@ lolli is a terminal based and menageable (via REST) client. Only support channel
 - [gumbleopenal](https://github.com/layeh/gumble/tree/master/gumbleopenal)
 - [termbox-go](https://github.com/nsf/termbox-go)
 - [negroni](github.com/codegangsta/negroni)
+- libopenal-dev, needed to instal via package manager
+
+##before-using
+```openssl genrsa -out server.key 1024
+openssl req -new -x509 -key server.key -out server.pem ```
 
 ## License
 
