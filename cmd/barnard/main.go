@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"../../../../code/lolli/"
+	"../../"
 	"github.com/codegangsta/negroni"
 	"github.com/layeh/barnard/uiterm"
 	"github.com/layeh/gumble/gumble"
@@ -16,7 +16,7 @@ import (
 func main() {
 	// Command line flags
 	server := flag.String("server", "localhost:64738", "the server to connect to")
-	username := flag.String("username", "lollii", "the username of the client")
+	username := flag.String("username", "lolli", "the username of the client")
 	insecure := flag.Bool("insecure", true, "skip server certificate verification")
 	certificate := flag.String("certificate", "server.pem", "PEM encoded certificate and private key")
 	key := flag.String("key", "server.key", "PEM encoded certificate and private key")
