@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"flag"
 	"fmt"
-	"net/http"
 	"os"
 
 	"github.com/codegangsta/negroni"
@@ -42,7 +41,7 @@ func main() {
 		}
 		b.TLSConfig.Certificates = append(b.TLSConfig.Certificates, cert)
 	}
-	mux := b.initializeApiMethods()
+	mux := initializeApiMethods()
 	b.Api = negroni.Classic()
 	b.Api.UseHandler(mux)
 	go b.Api.Run(":3000")
