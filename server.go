@@ -1,16 +1,43 @@
 package barnard
 
 import (
-	"fmt"
+	_ "github.com/layeh/gumble/gumble"
 	"net/http"
 )
 
-func initializeApiMethods() *http.ServeMux {
+func (b *Barnard) InitializeApiMethods() *http.ServeMux {
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(w, "Welcome to the home page!")
-	})
+	mux.HandleFunc("/add-channel/", b.AddChannel)
+
+	mux.HandleFunc("/join-channel/", b.JoinChannel)
+
+	mux.HandleFunc("/remove-channel/", b.RemoveChannel)
 
 	return mux
+}
+
+func (b *Barnard) AddChannel(w http.ResponseWriter, req *http.Request) {
+	channelName := req.URL.Path[len("/add-channel/"):]
+	if !b.Client.Self.IsRegistered() {
+		b.Client.Self.Register()
+	}
+	channel := b.Client.Self.Channel
+	channel.Add(channelName, true)
+}
+func (b *Barnard) JoinChannel(w http.ResponseWriter, req *http.Request) {
+	channelName := req.URL.Path[len("/join-channel/"):]
+
+	channel := b.Client.Self.Channel
+	found := channel.Find(channelName)
+
+	if found != nil && found != channel {
+		b.Client.Self.Move(found)
+	}
+}
+
+func (b *Barnard) RemoveChannel(w http.ResponseWriter, req *http.Request) {
+	//	channelName := req.URL.Path[len("/remove-channel/"):]
+	channel := b.Client.Self.Channel
+	channel.Remove()
 }
