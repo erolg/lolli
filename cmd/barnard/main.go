@@ -42,15 +42,10 @@ func main() {
 		}
 		b.TLSConfig.Certificates = append(b.TLSConfig.Certificates, cert)
 	}
-
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(w, "Welcome to the home page!")
-	})
-
+	mux := b.initializeApiMethods()
 	b.Api = negroni.Classic()
 	b.Api.UseHandler(mux)
-	b.Api.Run(":3000")
+	go b.Api.Run(":3000")
 	b.Ui = uiterm.New(&b)
 	b.Ui.Run()
 }
