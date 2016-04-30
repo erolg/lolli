@@ -4,8 +4,10 @@ import (
 	"crypto/tls"
 	"flag"
 	"fmt"
+	"net/http"
 	"os"
 
+	"github.com/codegangsta/negroni"
 	"github.com/layeh/barnard"
 	"github.com/layeh/barnard/uiterm"
 	"github.com/layeh/gumble/gumble"
@@ -15,15 +17,15 @@ import (
 func main() {
 	// Command line flags
 	server := flag.String("server", "localhost:64738", "the server to connect to")
-	username := flag.String("username", "", "the username of the client")
-	insecure := flag.Bool("insecure", false, "skip server certificate verification")
+	username := flag.String("username", "lolli", "the username of the client")
+	insecure := flag.Bool("insecure", true, "skip server certificate verification")
 	certificate := flag.String("certificate", "", "PEM encoded certificate and private key")
 
 	flag.Parse()
 
 	// Initialize
 	b := barnard.Barnard{
-		Config: gumble.NewConfig(),
+		Config:  gumble.NewConfig(),
 		Address: *server,
 	}
 
@@ -41,6 +43,14 @@ func main() {
 		b.TLSConfig.Certificates = append(b.TLSConfig.Certificates, cert)
 	}
 
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		fmt.Fprintf(w, "Welcome to the home page!")
+	})
+
+	b.Api = negroni.Classic()
+	b.Api.UseHandler(mux)
+	b.Api.Run(":3000")
 	b.Ui = uiterm.New(&b)
 	b.Ui.Run()
 }
