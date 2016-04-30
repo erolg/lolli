@@ -8,14 +8,21 @@ lolli is a terminal based and menageable (via REST) client. Only support channel
 ## Requirements
 
 - [gumble](https://github.com/layeh/gumble/tree/master/gumble)
+- libopenal-dev, needed to instal via package manager (apt-get)
 - [gumbleopenal](https://github.com/layeh/gumble/tree/master/gumbleopenal)
 - [termbox-go](https://github.com/nsf/termbox-go)
 - [negroni](github.com/codegangsta/negroni)
-- libopenal-dev, needed to instal via package manager
+
+to install package ```go get [github link (github.com/user/repo)]```
+
+to update the package you can use ```-u``` parameter
+
 
 ##before-using
-```openssl genrsa -out server.key 1024
-openssl req -new -x509 -key server.key -out server.pem ```
+run these commands :
+
+```openssl genrsa -out server.key 1024```
+```openssl req -new -x509 -key server.key -out server.pem ```
 
 ## License
 
