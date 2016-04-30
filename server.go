@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (b *Barnard) InitializeApiMethods() *http.ServeMux {
+func (b *Barnard) InitApi() *http.ServeMux {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/add-channel/", b.AddChannel)
