@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/codegangsta/negroni"
-	"github.com/layeh/barnard"
+	"github.com/erolg/lolli"
 	"github.com/layeh/barnard/uiterm"
 	"github.com/layeh/gumble/gumble"
 	_ "github.com/layeh/gumble/opus"
