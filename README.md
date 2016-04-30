@@ -21,8 +21,16 @@ to update the package you can use ```-u``` parameter
 ##before-using
 run these commands :
 
-```openssl genrsa -out server.key 1024```
-```openssl req -new -x509 -key server.key -out server.pem ```
+* ```openssl genrsa -out server.key 1024```
+* ```openssl req -new -x509 -key server.key -out server.pem ```
+
+##running
+1. ```git clone ...```
+2. ```cd lolli```
+3. ```openssl genrsa -out server.key 1024```
+4. ```openssl req -new -x509 -key server.key -out server.pem ```
+5.  ```go run cmd/barnard/main.go```
+
 
 ## License
 
