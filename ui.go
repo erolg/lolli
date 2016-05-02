@@ -150,7 +150,7 @@ func (b *Barnard) OnUiInitialize(ui *uiterm.Ui) {
 
 	b.Ui.AddKeyListener(b.OnFocusPress, uiterm.KeyTab)
 	b.Ui.AddKeyListener(b.OnVoiceToggle, uiterm.KeyF1)
-	b.Ui.AddKeyListener(b.OnQuitPress, uiterm.KeyF10)
+	b.Ui.AddKeyListener(b.OnQuitPress, uiterm.KeyF5)
 	b.Ui.AddKeyListener(b.OnClearPress, uiterm.KeyCtrlL)
 	b.Ui.AddKeyListener(b.OnScrollOutputUp, uiterm.KeyPgup)
 	b.Ui.AddKeyListener(b.OnScrollOutputDown, uiterm.KeyPgdn)
