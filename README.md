@@ -8,7 +8,8 @@ lolli is a terminal based and menageable (via REST) client. Only support channel
 ## Requirements
 
 - [gumble](https://github.com/layeh/gumble/tree/master/gumble)
-- libopenal-dev, needed to instal via package manager (apt-get)
+- libopenal-dev, needed to install via package manager (apt-get)
+- libopus-dev, needed to install via package manager for gopus (apt-get)
 - [gumbleopenal](https://github.com/layeh/gumble/tree/master/gumbleopenal)
 - [termbox-go](https://github.com/nsf/termbox-go)
 - [negroni](github.com/codegangsta/negroni)
