@@ -10,7 +10,7 @@ import (
 	"github.com/layeh/gumble/gumbleutil"
 )
 
-func (b *Barnard) start() {
+func (b *Barnard) start() error {
 	b.Config.Attach(gumbleutil.AutoBitrate)
 	b.Config.Attach(b)
 
@@ -18,7 +18,7 @@ func (b *Barnard) start() {
 	_, err = gumble.DialWithDialer(new(net.Dialer), b.Address, b.Config, &b.TLSConfig)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
-		os.Exit(1)
+		return err
 	}
 
 	// Audio
@@ -27,24 +27,17 @@ func (b *Barnard) start() {
 	}
 	if stream, err := gumbleopenal.New(b.Client); err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
-		os.Exit(1)
+		return err
 	} else {
 		b.Stream = stream
+		return nil
 	}
 }
 
 func (b *Barnard) OnConnect(e *gumble.ConnectEvent) {
 	b.Client = e.Client
 
-	b.Ui.SetActive(uiViewInput)
-	b.UiTree.Rebuild()
-	b.Ui.Refresh()
-
-	b.UpdateInputStatus(fmt.Sprintf("To: %s", e.Client.Self.Channel.Name))
-	b.AddOutputLine(fmt.Sprintf("Connected to %s", b.Client.Conn.RemoteAddr()))
-	if e.WelcomeMessage != nil {
-		b.AddOutputLine(fmt.Sprintf("Welcome message: %s", esc(*e.WelcomeMessage)))
-	}
+	fmt.Printf("To: %s", e.Client.Self.Channel.Name)
 }
 
 func (b *Barnard) OnDisconnect(e *gumble.DisconnectEvent) {
@@ -54,29 +47,24 @@ func (b *Barnard) OnDisconnect(e *gumble.DisconnectEvent) {
 		reason = "connection error"
 	}
 	if reason == "" {
-		b.AddOutputLine("Disconnected")
+		fmt.Printf("Disconnected")
+		b.End()
 	} else {
-		b.AddOutputLine("Disconnected: " + reason)
+		fmt.Printf("Disconnected: " + reason)
+		b.End()
 	}
-	b.UiTree.Rebuild()
-	b.Ui.Refresh()
 }
 
 func (b *Barnard) OnTextMessage(e *gumble.TextMessageEvent) {
-	b.AddOutputMessage(e.Sender, e.Message)
 }
 
 func (b *Barnard) OnUserChange(e *gumble.UserChangeEvent) {
 	if e.Type.Has(gumble.UserChangeChannel) && e.User == b.Client.Self {
-		b.UpdateInputStatus(fmt.Sprintf("To: %s", e.User.Channel.Name))
+		fmt.Printf("To: %s", e.User.Channel.Name)
 	}
-	b.UiTree.Rebuild()
-	b.Ui.Refresh()
 }
 
 func (b *Barnard) OnChannelChange(e *gumble.ChannelChangeEvent) {
-	b.UiTree.Rebuild()
-	b.Ui.Refresh()
 }
 
 func (b *Barnard) OnPermissionDenied(e *gumble.PermissionDeniedEvent) {
@@ -103,9 +91,20 @@ func (b *Barnard) OnPermissionDenied(e *gumble.PermissionDeniedEvent) {
 	case gumble.PermissionDeniedNestingLimit:
 		info = "nesting limit"
 	}
-	b.AddOutputLine(fmt.Sprintf("Permission denied: %s", info))
+	fmt.Printf("Permission denied: %s", info)
 }
 
+func (b *Barnard) VoiceToggle() {
+	if b.Pushed == false {
+		b.Stream.StopSource()
+		fmt.Println("Idle")
+		b.LastState = false
+	} else {
+		b.Stream.StartSource()
+		fmt.Println("Tx")
+		b.LastState = true
+	}
+}
 func (b *Barnard) OnUserList(e *gumble.UserListEvent) {
 }
 

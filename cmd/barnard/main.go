@@ -8,18 +8,21 @@ import (
 
 	"../../"
 	"github.com/codegangsta/negroni"
-	"github.com/layeh/barnard/uiterm"
 	"github.com/layeh/gumble/gumble"
 	_ "github.com/layeh/gumble/opus"
+	"github.com/stianeikeland/go-rpio"
 )
 
 func main() {
 	// Command line flags
 	server := flag.String("server", "localhost:64738", "the server to connect to")
-	username := flag.String("username", "lolli", "the username of the client")
+	username := flag.String("username", "loolli", "the username of the client")
 	insecure := flag.Bool("insecure", true, "skip server certificate verification")
 	certificate := flag.String("certificate", "server.pem", "PEM encoded certificate and private key")
 	key := flag.String("key", "server.key", "PEM encoded certificate and private key")
+	led := flag.Int("led", 22, "led pin")
+	pushbutton := flag.Int("push", 27, "push button pin")
+	switchP := flag.Int("switchP", 17, "switch pin")
 
 	flag.Parse()
 
@@ -30,6 +33,10 @@ func main() {
 	}
 
 	b.Config.Username = *username
+
+	b.LedPin = rpio.Pin(*led)
+	b.PushPin = rpio.Pin(*pushbutton)
+	b.SwitchPin = rpio.Pin(*switchP)
 
 	if *insecure {
 		b.TLSConfig.InsecureSkipVerify = true
@@ -47,6 +54,5 @@ func main() {
 	b.Api = negroni.Classic()
 	b.Api.UseHandler(mux)
 	go b.Api.Run(":3000")
-	b.Ui = uiterm.New(&b)
-	b.Ui.Run()
+	b.Run()
 }
