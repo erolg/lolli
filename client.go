@@ -96,11 +96,12 @@ func (b *Barnard) OnPermissionDenied(e *gumble.PermissionDeniedEvent) {
 
 func (b *Barnard) VoiceToggle() {
 	if b.Pushed == false {
-		b.Stream.StopSource()
+		b.Client.Self.SetSelfMuted(true) //StopSource()
 		fmt.Println("Idle")
 		b.LastState = false
 	} else {
-		b.Stream.StartSource()
+		b.Client.Self.SetSelfMuted(false)
+		//b.Stream.StartSource()
 		fmt.Println("Tx")
 		b.LastState = true
 	}

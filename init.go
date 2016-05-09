@@ -47,7 +47,9 @@ func (b *Barnard) Initialize() {
 		fmt.Println("Error when starting client")
 		os.Exit(1)
 	} else {
+		b.Stream.StartSource()
 		b.LedPin.High()
+		
 	}
 
 }

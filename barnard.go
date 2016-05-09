@@ -4,7 +4,7 @@ import (
 	"crypto/tls"
 
 	"github.com/codegangsta/negroni"
-	"github.com/layeh/barnard/uiterm"
+//	"github.com/layeh/barnard/uiterm"
 	"github.com/layeh/gumble/gumble"
 	"github.com/layeh/gumble/gumbleopenal"
 	"github.com/stianeikeland/go-rpio"
