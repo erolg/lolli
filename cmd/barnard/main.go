@@ -30,10 +30,10 @@ func main() {
 
 	// Command line flags
 	server := flag.String("server", "192.168.0.201:64738", "the server to connect to")
-	username := flag.String("username", "lool", "the username of the client")
+	username := flag.String("username", "lolo", "the username of the client")
 	insecure := flag.Bool("insecure", true, "skip server certificate verification")
-	certificate := flag.String("certificate", "server.pem", "PEM encoded certificate and private key")
-	key := flag.String("key", "server.key", "PEM encoded certificate and private key")
+	certificate := flag.String("certificate", "", "PEM encoded certificate and private key") //server.pem
+	key := flag.String("key", "", "PEM encoded certificate and private key") //server.key
 
 	flag.Parse()
 
@@ -45,26 +45,32 @@ func main() {
 
     //use default pin naming
     PinMode(LED, OUTPUT)
+    PinMode(PUSHBUTTON, INPUT)
+    PinMode(SWITCH, INPUT)
+
     DigitalWrite(LED, HIGH)
     Delay(500)
     DigitalWrite(LED, LOW)
+    Delay(500)
+    DigitalWrite(LED, HIGH)	
 
         //a goroutine to check button push event
         go func() {
                 last_time := time.Now().UnixNano() / 1000000
                 btn_pushed := 0
-                for pin := range WiringPiISR(PUSHBUTTON, INT_EDGE_RISING) {
+                for pin := range WiringPiISR(PUSHBUTTON, INT_EDGE_BOTH) {
                         if pin > -1 {
                                 n := time.Now().UnixNano() / 1000000
                                 delta := n - last_time
-                                if delta > 400 { //software debouncing
+                                if delta > 200 { //software debouncing
                                         if(DigitalRead(PUSHBUTTON) == HIGH){
-                                                log.Println("button on")
+                                                log.Println("button on")				
+						b.Client.Self.SetMuted(false)
 						b.Stream.StartSource()
                                         }else{
                                                 log.Println("button off")
-						b.Stream.StopSource()
-                                        }
+						b.Client.Self.SetMuted(true)
+					}
 
                                         last_time = n
                                         btn_pushed++
@@ -74,10 +80,12 @@ func main() {
                 }
         }()
 
+
         //a goroutine to check switch event
         go func() {
                 Slast_time := time.Now().UnixNano() / 1000000
                 switch_on := 0
+		
                 for Switchpin := range WiringPiISR(SWITCH, INT_EDGE_RISING) {
                         if Switchpin > -1 {
                                 Sn := time.Now().UnixNano() / 1000000
@@ -85,10 +93,13 @@ func main() {
                                 if Sdelta > 400 { //software debouncing
                                         if(DigitalRead(SWITCH) == HIGH){
 						log.Println("switch on")
-						b.Stream.StartSource()
+						b.Client.Self.SetDeafened(false)
+						b.Client.Self.SetMuted(false)
+                                                b.Stream.StartSource()
 					}else{
 						log.Println("switch off")
-						b.Stream.StopSource()
+						b.Client.Self.SetDeafened(true)
+						
 					}
                                         Slast_time = Sn
                                         switch_on++
