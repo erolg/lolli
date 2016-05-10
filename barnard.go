@@ -7,7 +7,8 @@ import (
 //	"github.com/layeh/barnard/uiterm"
 	"github.com/layeh/gumble/gumble"
 	"github.com/layeh/gumble/gumbleopenal"
-	"github.com/stianeikeland/go-rpio"
+//	"github.com/stianeikeland/go-rpio"
+
 )
 
 type Barnard struct {
@@ -21,9 +22,9 @@ type Barnard struct {
 
 	Api *negroni.Negroni
 
-	Pushed    bool
-	LastState bool
-	PushPin   rpio.Pin
-	LedPin    rpio.Pin
-	SwitchPin rpio.Pin
+//	Pushed    bool
+//	LastState bool
+//	PushPin   rpio.Pin
+//	LedPin    rpio.Pin
+//	SwitchPin rpio.Pin
 }

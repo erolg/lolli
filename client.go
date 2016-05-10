@@ -95,16 +95,17 @@ func (b *Barnard) OnPermissionDenied(e *gumble.PermissionDeniedEvent) {
 }
 
 func (b *Barnard) VoiceToggle() {
-	if b.Pushed == false {
-		b.Client.Self.SetSelfMuted(true) //StopSource()
+//	if b.Pushed == false {
+		//b.Client.Self.SetSelfMuted(true) //
+		b.Stream.StopSource()
 		fmt.Println("Idle")
-		b.LastState = false
-	} else {
-		b.Client.Self.SetSelfMuted(false)
-		//b.Stream.StartSource()
+	//	b.LastState = false
+//	} else {
+		//b.Client.Self.SetSelfMuted(false)
+		b.Stream.StartSource()
 		fmt.Println("Tx")
-		b.LastState = true
-	}
+	//	b.LastState = true
+//	}
 }
 func (b *Barnard) OnUserList(e *gumble.UserListEvent) {
 }
