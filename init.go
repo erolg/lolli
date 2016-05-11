@@ -4,16 +4,23 @@ import (
 	"fmt"
 //	"github.com/stianeikeland/go-rpio"
 	"os"
-	"time"
+//	"time"
+	"sync"
 )
 
 
 func (b *Barnard) Run() {
 	b.Initialize()	
+	b.Stream.StartSource()
+
+	var wg sync.WaitGroup // wait for the routines
+	wg.Add(1)
+
+	wg.Wait()
 	
-        for {
-              time.Sleep(time.Millisecond * 1000)
-        }
+//        for {
+  //            time.Sleep(time.Millisecond * 1000)
+    //    }
 
 //	b.End()
 }
@@ -24,9 +31,7 @@ func (b *Barnard) Initialize() {
 		fmt.Println("Error when starting client")
 		os.Exit(1)
 	} else {
-		//b.LedPin.High()
-		//b.Stream.StartSource()
-		//b.LedPin.High()
+		
 		
 	}
 

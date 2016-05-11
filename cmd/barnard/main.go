@@ -47,12 +47,16 @@ func main() {
     PinMode(LED, OUTPUT)
     PinMode(PUSHBUTTON, INPUT)
     PinMode(SWITCH, INPUT)
-
+    //DigitalWrite(PUSHBUTTON, LOW)
+    //DigitalWrite(PUSHBUTTON, LOW)
+//    pullUpDnControl(PUSHBUTTON,PUD_DOWN)
+//    pullUpDnControl(SWITCH,PUD_DOWN)
+ 
     DigitalWrite(LED, HIGH)
     Delay(500)
     DigitalWrite(LED, LOW)
     Delay(500)
-    DigitalWrite(LED, HIGH)	
+    DigitalWrite(LED, HIGH)		
 
         //a goroutine to check button push event
         go func() {
@@ -60,16 +64,19 @@ func main() {
                 btn_pushed := 0
                 for pin := range WiringPiISR(PUSHBUTTON, INT_EDGE_BOTH) {
                         if pin > -1 {
+				Delay(5)
                                 n := time.Now().UnixNano() / 1000000
                                 delta := n - last_time
-                                if delta > 200 { //software debouncing
-                                        if(DigitalRead(PUSHBUTTON) == HIGH){
-                                                log.Println("button on")				
-						b.Client.Self.SetMuted(false)
-						b.Stream.StartSource()
-                                        }else{
-                                                log.Println("button off")
-						b.Client.Self.SetMuted(true)
+                                if delta > 100 { //software debouncing
+                                        if DigitalRead(SWITCH) == LOW { //PTT button mode
+						if DigitalRead(PUSHBUTTON) == HIGH { 
+                                                	log.Println("button on")				
+							b.Client.Self.SetMuted(false)
+						//	b.Stream.StartSource()
+                                        	}else{
+                                                	log.Println("button off")
+							b.Client.Self.SetMuted(true)
+						}
 					}
 
                                         last_time = n
@@ -83,25 +90,26 @@ func main() {
 
         //a goroutine to check switch event
         go func() {
-                Slast_time := time.Now().UnixNano() / 1000000
+                last_time := time.Now().UnixNano() / 1000000
                 switch_on := 0
 		
-                for Switchpin := range WiringPiISR(SWITCH, INT_EDGE_RISING) {
+                for Switchpin := range WiringPiISR(SWITCH, INT_EDGE_BOTH) {
                         if Switchpin > -1 {
-                                Sn := time.Now().UnixNano() / 1000000
-                                Sdelta := Sn - Slast_time
-                                if Sdelta > 400 { //software debouncing
-                                        if(DigitalRead(SWITCH) == HIGH){
-						log.Println("switch on")
-						b.Client.Self.SetDeafened(false)
+				Delay(5)
+                                n := time.Now().UnixNano() / 1000000
+                                delta := n - last_time
+                                if delta > 100 { //software debouncing
+                                        if(DigitalRead(SWITCH) == HIGH){  // VOX mode
+						log.Println("switch ON")
+						//b.Client.Self.SetDeafened(false)
 						b.Client.Self.SetMuted(false)
-                                                b.Stream.StartSource()
-					}else{
-						log.Println("switch off")
-						b.Client.Self.SetDeafened(true)
+                                                //b.Stream.StartSource()
+					}else if (DigitalRead(SWITCH) == LOW){                           //disable VOX mode
+						log.Println("switch OFF")
+						b.Client.Self.SetMuted(true)
 						
 					}
-                                        Slast_time = Sn
+                                        last_time = n
                                         switch_on++
 
                                 }
@@ -134,4 +142,5 @@ func main() {
 	b.Api.UseHandler(mux)
 	go b.Api.Run(":3000")
 	b.Run()
+
 }
